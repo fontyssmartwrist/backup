@@ -1,0 +1,196 @@
+<!-- Main page of the web page -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="../javascript/roslib.min.js"></script>
+<script src="../javascript/three.min.js"></script>
+<script src="../javascript/eventemitter2.min.js"></script>
+<script src="../javascript/ros3d.min.js"></script>
+<script src="show_urdf.js"></script>
+<script src="../javascript/jquery.min.js"></script> 
+<link rel="stylesheet" type="text/css" href="base.css">
+</head>
+
+<body onload="show3DJS()">
+ <!-- header of the website -->
+ <div class="grid-container">
+  <div class="header" >
+    <img src="smartwrist.png" alt="smartwrist" id="smartlogo">
+    <div id="title">Fontys Smart Wrist</div>
+  </div>
+
+  <div class="connection">
+    <div id="statusIndicator" class="connectionIndicator">
+        <p id="connecting">
+          Connecting to ROS
+        </p>
+        <p id="connected" style="color:#0099cc; display:none">
+          Connected to ROS
+        </p>
+        <p id="error" style="color:#FF0000; display:none">
+          Connection failed
+        </p>
+        <p id="closed" style="display:none">
+          Connection closed.
+        </p>
+      </div>
+  </div>
+  <script src="connect_ros.js"></script> 
+
+  <!-- load URDF file -->
+  <div class="middle">
+          <div id="viewContainer">
+              <div id="urdf">
+              </div>
+          </div>  
+  </div>
+  <!-- navigationbar -->
+  <div class="right" id="rightbar">
+    <ul>
+    <li><a href="#robotstatus" onclick="showStatus()">Status</a></li>
+    <!-- <li><a href="#2dcontrol" onclick="show2DControl()">2D control</a></li> -->
+    <li><a href="#joint" onclick="showSliders()">Joint control</a></li>
+    <li><a href="#lasergrid" onclick="showGrid()">Laser grid</a></li> 
+    <li><a href="#levelingplatform" onclick="showLevel()">Leveling </a></li> 
+    </ul>
+    
+    <div class="mainStatus" id="robotStatus">
+      <div>
+        <p id="speedMode">
+        Speed mode:
+        </p>
+        <button class="singlebutton" onclick="waitForService('Speed:[1]')">
+          Debug
+        </button>
+        <button class="singlebutton" onclick="waitForService('Speed:[3]')">
+          Moderate
+        </button>
+        <button class="singlebutton" onclick="waitForService('Speed:[6]')">
+          Swift
+        </button>
+      </div>
+      <div id="codesysCon">
+        CODESYS connection:
+      </div>
+      <div id="emergency">
+        Emergency: 
+      </div>
+      <div id="systemStart">
+        Movement:
+      </div>
+      <div id="motorSetting">
+        Motors:
+      </div>
+      <div id="jointAngles">
+        Joint angles:
+      </div>
+      <button id="buttonStart" onclick="waitForService('Status:[0]')">
+        Start
+      </button>
+      <button id="buttonStop" onclick="waitForService('Status:[1]')">
+        Stop
+      </button>
+    </div>
+
+    <!-- 2d control -->
+    <div class="2dSlider" id="2dControl">
+      <canvas id="firstCanvas"  style="padding:none; margin: none;"></canvas> 
+      <canvas id="secondCanvas" style="padding:none; margin: none;"></canvas>
+      <p id="coordinates"></p>
+      <button class="singlebutton" id="buttonSend2D">
+        Send
+      </button>
+    </div>
+
+     <!-- rangesliders -->
+    <div id="sliders" style="display:none;"> 
+      <div class="rangeslider1">
+          <p class="jointtext">Use the sliders to set each joint angle.</p>
+          <input type="range" min="-50" max="50" value="0" id="sliderRange" class="myslider"> 
+          <p class="jointtext">Joint1: <span id="demo1"></span></p>
+          <input type="range" min="-50" max="50" value="0" id="sliderRange2" class="myslider"> 
+          <p class="jointtext">Joint2: <span id="demo2"></span></p>
+          <input type="range" min="-50" max="50" value="0" id="sliderRange3" class="myslider"> 
+          <p class="jointtext">Joint3: <span id="demo3"></span></p>
+          <!-- <input type="range" min="-50" max="50" value="0" id="sliderRange4" class="myslider">  
+          <p class="jointtext">Joint4: <span id="demo4"></span></p>
+          <input type="range" min="-50" max="50" value="0" id="sliderRange5" class="myslider"> 
+          <p class="jointtext">Joint5: <span id="demo5"></span></p> -->
+      </div>
+      <div class="buttons">
+          <button class="singlebutton" id="buttonHome">
+            Home
+          </button>
+          <button class="singlebutton" id="buttonSend">
+            Send
+          </button>
+          <button class="singlebutton" id="buttonRandom">
+            Random
+          </button>
+          <button class="singlebutton" id="buttonCurrent">
+            Current
+          </button>
+      </div>
+    </div>
+
+    <!-- Laser grid -->
+    <div id="laserGrid" style="display:none;">
+      <canvas id="gridCanvas"></canvas>
+      <button class="singlebutton" id="buttonClear" onclick="clearGrid()">
+        Resize
+      </button>
+    </div>
+
+    <!-- Leveling platform -->
+    <div id="levelControl" style="display:none;">
+        <p id="orientation"> Orientation: </p>
+        <p id="x"> x: </p>
+        <p id="y"> y: </p>
+        <p id="z"> z: </p>
+        <p id="w"> w: </p>
+      <button class="singlebutton" id="sendQuatButton">
+        Send
+      </button>
+    </div>
+  </div> 
+
+  <!-- Footer -->
+  <div class="footer">  
+    <img src="fontys.png" alt="fontys">
+    <img src="delta.png" alt="delta" id="deltaimg">
+    <p class="teammembertext"> <strong>Team members:</strong> Aike van Alkemade, Jesus Negrete Martin  del Campo, Salah EI Hajj Hassan,
+        Ruben Hoogenraad, Jeroen Houben, Kars Landman,
+        Wesley van der Linden, Armando Guerrero Monsalve, Levi van Mulken,
+        Omar Mahmoud Omar Ouali, Markos Rikos, Jim Sep, Frank van Veen, Rens van Veggel, Juul Wolters,
+        Zhicheng Yu, Carlos Agorreta Zafra</p>
+  </div>
+
+ <!-- navigationbar with button Status, 2D control, Joint control, Laser grid and Leveling -->
+ <script src="../javascript/navigationbar.js"></script>
+ 
+ <!-- 5 randesliders and with button home, send, random and current -->
+ <script src="../javascript/jointcontrol.js"></script>
+ 
+ <!-- three views of robot arm and with send bottom -->
+ <script src="../javascript/waypointsender.js"></script>
+ 
+ <!-- grid area and resize button -->
+ <script src="../javascript/grid.js"></script>
+ 
+ <!-- status of the robot arm -->
+ <script src="../javascript/status.js"></script>
+ 
+ <!-- orientation value and with send button -->
+ <script src="../javascript/leveling.js"></script>
+
+ <!-- set the scroll bar to the center of the inner content -->
+ <script>
+    $(document).ready(function(){
+    var outerContent = $('.middle');
+    var innerContent = $('.middle > div');
+    outerContent.scrollLeft( (innerContent.width() - outerContent.width()) / 2);    
+ });
+</script>
+</body>
+</html>

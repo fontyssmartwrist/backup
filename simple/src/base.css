@@ -1,0 +1,305 @@
+/* This file describe how HTML elements should be displayed  */
+
+  /* border of the web page*/
+* {
+    box-sizing: border-box;
+  }
+
+  /* images */
+  img {
+    margin-top: 1vh;
+    margin-left: 1vh;
+    height: 8vh;
+    float: left;
+  }
+
+  /* delta image */
+  #deltaimg{
+    border-style: solid;
+    border-color: #05A8F3;
+    border-width: 0.1vh;
+  }
+
+  /* navigation bar */
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #444444;
+  }
+
+  /* buttons on the navigation bar */
+  li {
+    float: left;
+  }
+  
+  /* text on the navigation bar */
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    margin: 0;
+  }
+  
+  li a:hover:not(.active) {
+    background-color: #111;
+  }
+  
+  .active {
+    background-color: #4CAF50;
+  }
+  
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    
+  }
+  
+  /* The grid container */
+  .grid-container {
+    display: grid;
+    grid-template-areas: 
+      'header header header header header connection' 
+      'middle middle middle middle right right' 
+      'footer footer footer footer footer footer';
+  } 
+  
+  /* Style the header */
+  .header {
+    grid-area: header;
+    background-color: #0087dc; /* rgb 0 135 220*/
+    color: #eeeeee;
+    height: 10vh;
+    text-align: center;
+    font-size: 6vh;
+  }
+  
+  /* smart wrist logo */
+  #smartlogo{
+    padding-top: 0;
+  }
+
+  /* style the title fontys smart wrist */
+  #title{
+    margin-top: 1.4vh;
+  }
+
+  /* Style the connection status of ROS */
+  .connection {
+    grid-area: connection;
+    background-color: #ffffff; 
+    text-align: center;
+    padding: 1vh 2vw;
+    font-size: 2vh;  
+  }
+   
+  /* Style the middle column */
+  .middle {
+    grid-area: middle;
+    width: 67vw;
+    height: 80vh;
+    overflow:auto;
+    position: middle;
+    text-align: center;
+  }
+  
+  #viewContainer{
+    height:33vh;
+    width: 67vw;
+    display: table;
+    position: middle;
+  }
+
+  
+  /* Style the right column */
+  .right {
+    height: 80vh;
+    grid-area: right;
+    background-color: #EEEEEE;
+    width: 33vw;
+    padding: 0;
+    text-align: center;
+  }
+  
+  /* Style the footer */
+  .footer {
+    grid-area: footer;
+    background-color: #f6f6f6;
+    height: 10vh;
+    text-align: center;
+  }
+  
+  .myslider { 
+    -webkit-appearance: none; 
+    background: #d3d3d3; 
+    width: 95%; 
+    height: 1vh;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  } 
+
+  .teammembertext {
+    font-size: 1.6vh;
+  }
+
+  /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+  @media (max-aspect-ratio: 10/8) {
+    .grid-container  {
+      grid-template-areas: 
+        'header header header header header connection' 
+        'middle middle middle middle middle middle' 
+        'right right right right right right' 
+        'footer footer footer footer footer footer';
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 15vw;
+    float: left;
+    height: 40vh;
+    overflow: auto;
+}
+
+  li a {
+    display: block;
+    text-decoration: none;
+}
+
+
+  .right {
+    grid-area: right;
+    background-color:#eeeeee;
+    width: 100vw;
+    height: 40vh;
+}
+
+  .header {
+    font-size: 3.8vh;
+}
+
+  #title{
+    margin-top: 3vh;
+}
+
+  .middle {
+    height: 40vh;
+    width:100vw;
+    overflow:auto;
+    position: middle;
+    text-align: center;
+}
+
+  .connection {   
+    font-size: 1.5vh;  
+}
+
+.footer {
+  width:100vw;
+}
+
+.myslider { 
+  width: 60%; 
+} 
+
+.teammembertext {
+  font-size: 1.3vw;
+}
+
+}
+.rangeslider1{ 
+    text-align: middle; 
+
+  }
+
+  .jointtext{
+    height: 0.5vh;
+    margin-top: 0.8vh;
+    margin-bottom: 2.5vh;
+  }
+  
+  .myslider::-webkit-slider-thumb { 
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 10px;
+    height: 2vh;
+    border-radius: 20%;
+    background: #0087dc;
+    cursor: pointer;
+    opacity: 0.7;
+    outline: none;
+  } 
+
+  .myslider::-moz-range-thumb {
+  width: 10px;
+  height: 2vh;
+  border-radius: 20%;
+  background: #0087dc;
+  cursor: pointer;
+  opacity: 0.7;
+  outline: none;
+  }
+  
+  .myslider:hover { 
+    opacity: 1; 
+  } 
+  
+  /* style the speed mode button */
+  .singlebutton {
+    margin-bottom: 1vh;
+    background-color: white; 
+    color: black; 
+    border: 2px solid #0087dc;
+    font-size: 20px;
+  }
+
+  .singlebutton:hover {
+    background-color: #0087dc;
+    color: white;
+  }
+
+  td {
+    width: 15%;
+    height: 15%;
+  }
+
+  /* style the start button in Status page */
+  #buttonStart {
+      margin-top: 1vh;
+      background-color: #008800; 
+      color: #ffffff; 
+      border: 2px solid #000000;
+      font-size: 20px;
+      cursor: pointer;
+      width: 8vh;
+      height: 8vh;
+      border-radius: 50%;
+    }
+  
+  #buttonStart:hover {
+    background-color: #00AA00;
+  }
+
+  /* style the stop button in Status page */
+  #buttonStop {
+    margin-top: 1vh;
+    background-color: #DD0000; 
+    color: #ffffff; 
+    border: 2px solid #000000;
+    font-size: 20px;
+    cursor: pointer;
+    width: 8vh;
+    height: 8vh;
+    border-radius: 50%;
+  }
+
+  #buttonStop:hover {
+    background-color: #AA0000;
+  }
+    
