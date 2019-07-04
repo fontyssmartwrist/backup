@@ -1,0 +1,27 @@
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find sw_v4_description)/urdf/sw_v4.xacro'" />
+
+  <!-- <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
+
+  <node name="kinematic_model_v4_node" pkg="kinematic_model_v4" type="kinematic_model_v4_node" output="screen"/> -->
+
+  <!-- send fake joint values -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="TRUE"/>
+    <rosparam>
+      zeros:
+        joint1: 0.0
+        joint2: 0.0
+        joint3: 0.0
+    </rosparam>
+  </node>
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <param name="ignore_timestamp" type="bool" value="TRUE"/>
+  </node>
+
+  <!-- Show in Rviz   -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sw_v4_description)/launch/sw_v4.rviz"/>
+
+</launch>

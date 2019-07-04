@@ -1,0 +1,352 @@
+<?xml version="1.0"?>
+<!-- Revolute-Revolute Manipulator -->
+<robot name="sw_v4" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="half_PI" value="1.57079632679"/>
+  <xacro:property name="speed" value="1.57079632679"/>
+  <xacro:property name="mass" value="0.02" /> <!-- arbitrary value for mass -->
+  <xacro:property name="width" value="0.02" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="width1" value="1" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="height1" value="0.02" /> <!-- Link 1 -->
+  <xacro:property name="gwidth" value="2" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="gwidth1" value="0.002" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="gheight1" value="2" /> <!-- Link 1 -->
+  <xacro:property name="pwidth" value="0.01" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="pwidth1" value="0.001" /> <!-- Square dimensions (widthxwidth) of beams -->
+  <xacro:property name="pheight1" value="0.01" /> <!-- Link 1 -->
+  <xacro:property name="widthgrid" value="0.4" /> <!-- width of the grid -->
+  <xacro:property name="heightlaser" value="0.420678" /> <!-- height of the grid -->
+  <xacro:property name="distancegrid" value="1.75" /> <!-- distance between the laserpointer and the grid -->
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find sw_v4_description)/urdf/sw_v4.gazebo" />
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find sw_v4_description)/urdf/materials.xacro" />
+
+  <!-- Used for fixing robot to Gazebo 'base_link' -->
+  
+  <link name="world"/>
+  <!-- White canvas -->
+  <joint name="joint01" type="fixed">
+    <parent link="world"/>
+    <child link="canvas"/>
+    <origin xyz="0 -${distancegrid} 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="canvas">
+    <inertial>
+      <origin xyz="0 ${gwidth1/2} ${gheight1/2}" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${mass / 12.0 * (gwidth1*gwidth1 + gheight1*gheight1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass / 12.0 * (gheight1*gheight1 + gwidth*gwidth)}" iyz="0.0"
+        izz="${mass / 12.0 * (gwidth1*gwidth1 + gwidth*gwidth)}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 ${gwidth1/2} ${gheight1/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${gwidth} ${gwidth1} ${gheight1}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin xyz="0 ${gwidth1/2} ${gheight1/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${gwidth} ${gwidth1} ${gheight1}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Grid -->
+  <joint name="joint02" type="fixed">
+    <parent link="canvas"/>
+    <child link="grid"/>
+    <origin xyz="-${widthgrid/2} 0 ${heightlaser-widthgrid/2}" rpy="0 -${half_PI} -${half_PI}"/>
+  </joint>
+
+  <link name="grid">
+    <inertial>
+      <origin xyz="0.1 ${widthgrid/2} ${gheight1/2}" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${mass / 12.0 * (gwidth1*gwidth1 + gheight1*gheight1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass / 12.0 * (gheight1*gheight1 + gwidth*gwidth)}" iyz="0.0"
+        izz="${mass / 12.0 * (gwidth1*gwidth1 + gwidth*gwidth)}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh scale="0.004 0.004 0.004" filename="package://sw_v4_description/meshes/grid.stl" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="1 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh scale="0.004 0.004 0.004" filename="package://sw_v4_description/meshes/grid.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- clear box -->
+  <joint name="joint03" type="fixed">
+    <parent link="world"/>
+    <child link="clearBox"/>
+    <origin xyz="-0.315 -${distancegrid-1} ${heightlaser-widthgrid/1.5}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="clearBox">
+    <inertial>
+      <origin xyz="-0.315 -0.75 ${heightlaser-widthgrid/1.5}" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${mass / 12.0 * (gwidth1*gwidth1 + gheight1*gheight1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass / 12.0 * (gheight1*gheight1 + gwidth*gwidth)}" iyz="0.0"
+        izz="${mass / 12.0 * (gwidth1*gwidth1 + gwidth*gwidth)}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh scale="1.5 1 1.5" filename="package://sw_v4_description/meshes/tube_2.stl" />
+      </geometry>
+      <material name="clear"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh scale="1.5 1 1.5" filename="package://sw_v4_description/meshes/tube_2.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint0" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.0046135 -0.00012186 0.096013" rpy="0 0 0" />
+      <mass value="5.7694" />
+      <inertia
+        ixx="0.016279"
+        ixy="-2.9241E-06"
+        ixz="-0.00019498"
+        iyy="0.01308"
+        iyz="-1.4038E-05"
+        izz="0.0053116" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem1.STL" />
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem1.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- link1 -->
+  <joint name="joint1" type="revolute">
+    <origin xyz="0 0 0.2063" rpy="0 0 2.182"/>
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.1415" upper="3.1415" effort="1.27" velocity="${speed}"/>
+  </joint>
+
+  <link name="link1">
+    <inertial>
+      <origin xyz="-0.002448 0.0061877 0.25206" rpy="0 0 0"/>
+      <mass value="1.2912"/>
+      <inertia
+        ixx="0.00050926"
+        ixy="2.3182E-05"
+        ixz="5.5414E-05"
+        iyy="0.00045458"
+        iyz="-0.00014037"
+        izz="7.6348E-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem2.STL"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem2.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- 0.286095 0.079795-->
+  <!-- link2 -->
+  <joint name="joint2" type="revolute">
+    <origin xyz="-2.5882E-05 -4.4829E-05 0.079795" rpy="-0.22802 0.12977 -0.01488" />
+    <parent link="link1" />
+    <child link="link2" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.1415" upper="3.1415" effort="1.27" velocity="${speed}" />
+  </joint>
+
+  <link name="link2">
+    <inertial>
+      <origin xyz="0.040734 0.037687 0.18694" rpy="0 0 0" />
+      <mass value="6.5273" />
+      <inertia
+        ixx="0.020545"
+        ixy="-0.0025461"
+        ixz="-0.0054607"
+        iyy="0.023538"
+        iyz="-0.0063656"
+        izz="0.01031" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem3.STL" />
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sw_v4_description/meshes/assem3.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- disk on top -->
+  <joint name="joint3" type="revolute">
+    <origin xyz="-0.013401 -0.023212 0.10003" rpy="-0.023463 0.26077 -2.1852" />
+    <parent link="link2" />
+    <child link="link3" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.1415" upper="3.1415" effort="1.27" velocity="${speed}" />
+  </joint>
+
+  <link name="link3">
+    <inertial>
+      <origin xyz="-0.000166395896643769 -9.98506317533727E-06 0.0148981151365234" rpy="0 0 0" />
+      <mass value="0.697095422165826" />
+      <inertia
+        ixx="7.37932900573311E-05"
+        ixy="-2.63401730973886E-09"
+        ixz="-1.38017673687992E-06"
+        iyy="7.38370265272606E-05"
+        iyz="-8.28214648849329E-08"
+        izz="4.40525934610572E-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sw_v3_description/meshes/assem6.STL" />
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+       <mesh filename="package://sw_v3_description/meshes/assem6.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- laser_pointer -->
+  <joint name="joint4" type="fixed">
+    <origin xyz="0 0 0.031" rpy="0 0 0" />
+    <parent link="link3" />
+    <child link="link4" />
+  </joint>
+
+  <link name="link4">
+    <inertial>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${mass / 12.0 * (width*width + height1*height1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass / 12.0 * (height1*height1 + width*width)}" iyz="0.0"
+        izz="${mass / 12.0 * (width*width + width*width)}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${width} ${width} ${height1}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${height1/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${width} ${width} ${height1}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- laser beam -->
+  <joint name="joint5" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="link4" />
+    <child link="link5" />
+    <axis xyz="0 -1 0" />
+    <limit lower="0.0001" upper="2" effort="1.27" velocity="${speed}" />
+  </joint>
+
+  <link name="link5">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="${mass}" />
+      <inertia
+        ixx="${mass / 12.0 * (pwidth1*pwidth1 + pheight1*pheight1)}" ixy="0.0" ixz="0.0"
+        iyy="${mass / 12.0 * (pheight1*pheight1 + pwidth*pwidth)}" iyz="0.0"
+        izz="${mass / 12.0 * (pwidth1*pwidth1 + pwidth*pwidth)}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="${pwidth} ${pwidth} ${pheight1}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="${pwidth} ${pwidth} ${pheight1}"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
